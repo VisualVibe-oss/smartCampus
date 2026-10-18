@@ -14,6 +14,9 @@ import java.util.Set;
 @Table(name = "equipment")
 public class Equipment {
 
+   
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
