@@ -11,20 +11,24 @@ pipeline {
 
         stage('Build') {
             steps {
-                bat 'call mvnw.cmd -B clean package -DskipTests'
+                dir('backend/demo') {
+                    bat 'call mvnw.cmd -B clean package -DskipTests'
+                }
             }
         }
 
         stage('Test') {
             steps {
-                bat 'call mvnw.cmd -B test'
+                dir('backend/demo') {
+                    bat 'call mvnw.cmd -B test'
+                }
             }
         }
     }
 
     post {
         success {
-            archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+            archiveArtifacts artifacts: 'backend/demo/target/*.jar', fingerprint: true
         }
     }
 }

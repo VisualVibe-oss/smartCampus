@@ -66,11 +66,50 @@
 			<artifactId>spring-boot-starter-data-jpa-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webmvc-test</artifactId>
-			<scope>test</scope>
-		</dependency>
+                  <!-- API REST : contrôleurs et endpoints -->
+                  <dependency>
+                      <groupId>org.springframework.boot</groupId>
+                      <artifactId>spring-boot-starter-web</artifactId>
+                  </dependency>
+                  
+                  <!-- Validation des données -->
+                  <dependency>
+                      <groupId>org.springframework.boot</groupId>
+                      <artifactId>spring-boot-starter-validation</artifactId>
+                  </dependency>
+		
+                <dependency>
+				    <groupId>org.springframework.boot</groupId>
+				    <artifactId>spring-boot-starter-security</artifactId>
+				</dependency>
+                  
+                  <!-- Tests et MockMvc -->
+                  <dependency>
+                      <groupId>org.springframework.boot</groupId>
+                      <artifactId>spring-boot-starter-test</artifactId>
+                      <scope>test</scope>
+                  </dependency>
+                  
+                  <!-- Tests web pour Spring Boot 4 -->
+                  <dependency>
+                      <groupId>org.springframework.boot</groupId>
+                      <artifactId>spring-boot-starter-webmvc-test</artifactId>
+                      <scope>test</scope>
+                  </dependency>
+                  
+                  <!-- Base de données de test en mémoire -->
+                  <dependency>
+                      <groupId>com.h2database</groupId>
+                      <artifactId>h2</artifactId>
+                      <scope>test</scope>
+                  </dependency>
+
+		
+					<dependency>
+					    <groupId>org.springframework.boot</groupId>
+					    <artifactId>spring-boot-starter-actuator</artifactId>
+					</dependency>
+
 	</dependencies>
 
 	<build>
