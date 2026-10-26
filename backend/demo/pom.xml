@@ -51,12 +51,7 @@
                       <groupId>org.springframework.boot</groupId>
                       <artifactId>spring-boot-starter-validation</artifactId>
                   </dependency>
-                  
-                  <!-- Sécurité et BCrypt -->
-                  <dependency>
-                      <groupId>org.springframework.boot</groupId>
-                      <artifactId>spring-boot-starter-security</artifactId>
-                  </dependency>
+                
                   
                   <!-- Tests et MockMvc -->
                   <dependency>
