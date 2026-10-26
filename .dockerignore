@@ -1,0 +1,10 @@
+.git
+.idea
+**/.idea
+**/.vscode
+**/src
+**/.mvn
+**/data
+**/*.log
+.env
+.env.*
