@@ -100,4 +100,7 @@ public class UserService {
         return new UserResponse(user.getId(), user.getEmail(), user.getFullName(), user.getRole(),
                 user.isEnabled(), user.getCreatedAt());
     }
+    public void testErreur() {
+    erreur volontaire
+}
 }
