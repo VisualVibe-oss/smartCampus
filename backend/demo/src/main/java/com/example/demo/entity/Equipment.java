@@ -9,33 +9,27 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
-@Table(name = "equipment")
+@Table(name = "equipments")
 public class Equipment {
 
-   
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id ;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-    
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, length = 100, unique = true)
     private String name;
-    
-    
+
     @ManyToMany(mappedBy = "equipment")
     private Set<Room> rooms = new HashSet<>();
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    
-    
-
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

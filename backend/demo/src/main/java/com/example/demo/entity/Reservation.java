@@ -12,14 +12,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.Instant;
+import java.util.UUID;
 
 @Entity
 @Table(name = "reservations")
 public class Reservation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "room_id", nullable = false)
@@ -29,27 +30,37 @@ public class Reservation {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(nullable = false)
-    private String title;
+    @Column(name = "start_at", nullable = false)
+    private Instant startAt;
 
-    @Column(name = "starts_at", nullable = false)
-    private Instant startsAt;
-
-    @Column(name = "ends_at", nullable = false)
-    private Instant endsAt;
+    @Column(name = "end_at", nullable = false)
+    private Instant endAt;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     private ReservationStatus status = ReservationStatus.CONFIRMED;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
 
-    public Long getId() {
+    @Column(name = "cancelled_at")
+    private Instant cancelledAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "revoked_by")
+    private User revokedBy;
+
+    @Column(name = "revoked_at")
+    private Instant revokedAt;
+
+    @Column(name = "revocation_reason", columnDefinition = "TEXT")
+    private String revocationReason;
+
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -69,28 +80,20 @@ public class Reservation {
         this.user = user;
     }
 
-    public String getTitle() {
-        return title;
+    public Instant getStartAt() {
+        return startAt;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setStartAt(Instant startAt) {
+        this.startAt = startAt;
     }
 
-    public Instant getStartsAt() {
-        return startsAt;
+    public Instant getEndAt() {
+        return endAt;
     }
 
-    public void setStartsAt(Instant startsAt) {
-        this.startsAt = startsAt;
-    }
-
-    public Instant getEndsAt() {
-        return endsAt;
-    }
-
-    public void setEndsAt(Instant endsAt) {
-        this.endsAt = endsAt;
+    public void setEndAt(Instant endAt) {
+        this.endAt = endAt;
     }
 
     public ReservationStatus getStatus() {
@@ -107,5 +110,37 @@ public class Reservation {
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Instant getCancelledAt() {
+        return cancelledAt;
+    }
+
+    public void setCancelledAt(Instant cancelledAt) {
+        this.cancelledAt = cancelledAt;
+    }
+
+    public User getRevokedBy() {
+        return revokedBy;
+    }
+
+    public void setRevokedBy(User revokedBy) {
+        this.revokedBy = revokedBy;
+    }
+
+    public Instant getRevokedAt() {
+        return revokedAt;
+    }
+
+    public void setRevokedAt(Instant revokedAt) {
+        this.revokedAt = revokedAt;
+    }
+
+    public String getRevocationReason() {
+        return revocationReason;
+    }
+
+    public void setRevocationReason(String revocationReason) {
+        this.revocationReason = revocationReason;
     }
 }

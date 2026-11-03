@@ -11,6 +11,7 @@ import com.example.demo.repository.ReservationRepository;
 import com.example.demo.repository.UserRepository;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,48 +32,48 @@ public class UserService {
         return userRepository.findAll().stream().map(this::toResponse).toList();
     }
 
-    public UserResponse findById(Long id) {
+    public UserResponse findById(UUID id) {
         return toResponse(findUser(id));
     }
 
     @Transactional
     public UserResponse create(UserCreateRequest request) {
         String email = request.email().trim();
-        if (userRepository.existsByEmail(email)) {
+        if (userRepository.existsByEmailIgnoreCase(email)) {
             throw new ConflictException("Cette adresse email est déjà utilisée.");
         }
         User user = new User();
         user.setEmail(email);
-        user.setPassword(hashPassword(request.password()));
+        user.setPasswordHash(hashPassword(request.password()));
         user.setFullName(request.fullName().trim());
         user.setRole(request.role());
-        if (request.enabled() != null) {
-            user.setEnabled(request.enabled());
+        if (request.active() != null) {
+            user.setActive(request.active());
         }
         return toResponse(userRepository.saveAndFlush(user));
     }
 
     @Transactional
-    public UserResponse update(Long id, UserUpdateRequest request) {
+    public UserResponse update(UUID id, UserUpdateRequest request) {
         User user = findUser(id);
         String email = request.email().trim();
-        if (userRepository.existsByEmailAndIdNot(email, id)) {
+        if (userRepository.existsByEmailIgnoreCaseAndIdNot(email, id)) {
             throw new ConflictException("Cette adresse email est déjà utilisée.");
         }
         user.setEmail(email);
         user.setFullName(request.fullName().trim());
         user.setRole(request.role());
-        if (request.enabled() != null) {
-            user.setEnabled(request.enabled());
+        if (request.active() != null) {
+            user.setActive(request.active());
         }
         if (request.password() != null) {
-            user.setPassword(hashPassword(request.password()));
+            user.setPasswordHash(hashPassword(request.password()));
         }
         return toResponse(userRepository.saveAndFlush(user));
     }
 
     @Transactional
-    public void delete(Long id) {
+    public void delete(UUID id) {
         User user = findUser(id);
         if (reservationRepository.existsByUser_Id(id)) {
             throw new ConflictException("Cet utilisateur est encore référencé par une réservation.");
@@ -81,7 +82,7 @@ public class UserService {
         userRepository.flush();
     }
 
-    private User findUser(Long id) {
+    private User findUser(UUID id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable : " + id));
     }
@@ -98,6 +99,6 @@ public class UserService {
 
     private UserResponse toResponse(User user) {
         return new UserResponse(user.getId(), user.getEmail(), user.getFullName(), user.getRole(),
-                user.isEnabled(), user.getCreatedAt());
+                user.isActive(), user.getCreatedAt());
     }
 }

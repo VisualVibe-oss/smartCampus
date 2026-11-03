@@ -1,4 +1,6 @@
 package com.example.demo.dto;
 
-public record EquipmentResponse(Long id, String name) {
+import java.util.UUID;
+
+public record EquipmentResponse(UUID id, String name) {
 }

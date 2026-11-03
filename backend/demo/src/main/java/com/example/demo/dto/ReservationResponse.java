@@ -2,7 +2,9 @@ package com.example.demo.dto;
 
 import com.example.demo.entity.ReservationStatus;
 import java.time.Instant;
+import java.util.UUID;
 
-public record ReservationResponse(Long id, Long roomId, Long userId, String title,
-        Instant startsAt, Instant endsAt, ReservationStatus status, Instant createdAt) {
+public record ReservationResponse(UUID id, UUID roomId, UUID userId, Instant startAt, Instant endAt,
+        ReservationStatus status, Instant createdAt, Instant cancelledAt, UUID revokedBy,
+        Instant revokedAt, String revocationReason) {
 }
