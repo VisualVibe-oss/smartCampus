@@ -1,7 +1,8 @@
 package com.example.demo.dto;
 
 import java.util.Set;
+import java.util.UUID;
 
-public record RoomResponse(Long id, String name, String building, int capacity,
-        String description, boolean active, Set<Long> equipmentIds) {
+public record RoomResponse(UUID id, String code, String name, String building, int capacity,
+        boolean active, Set<UUID> equipmentIds) {
 }

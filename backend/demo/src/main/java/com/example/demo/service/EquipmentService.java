@@ -8,6 +8,7 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.EquipmentRepository;
 import com.example.demo.repository.RoomRepository;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +27,7 @@ public class EquipmentService {
         return equipmentRepository.findAll().stream().map(this::toResponse).toList();
     }
 
-    public EquipmentResponse findById(Long id) {
+    public EquipmentResponse findById(UUID id) {
         return toResponse(findEquipment(id));
     }
 
@@ -42,7 +43,7 @@ public class EquipmentService {
     }
 
     @Transactional
-    public EquipmentResponse update(Long id, EquipmentRequest request) {
+    public EquipmentResponse update(UUID id, EquipmentRequest request) {
         Equipment equipment = findEquipment(id);
         String name = request.name().trim();
         if (equipmentRepository.existsByNameAndIdNot(name, id)) {
@@ -53,7 +54,7 @@ public class EquipmentService {
     }
 
     @Transactional
-    public void delete(Long id) {
+    public void delete(UUID id) {
         Equipment equipment = findEquipment(id);
         if (roomRepository.existsByEquipment_Id(id)) {
             throw new ConflictException("Cet équipement est encore associé à une salle.");
@@ -62,7 +63,7 @@ public class EquipmentService {
         equipmentRepository.flush();
     }
 
-    private Equipment findEquipment(Long id) {
+    private Equipment findEquipment(UUID id) {
         return equipmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Équipement introuvable : " + id));
     }

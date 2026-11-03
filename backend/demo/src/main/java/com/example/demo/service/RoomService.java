@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,26 +35,26 @@ public class RoomService {
         return roomRepository.findAll().stream().map(this::toResponse).toList();
     }
 
-    public RoomResponse findById(Long id) {
+    public RoomResponse findById(UUID id) {
         return toResponse(findRoom(id));
     }
 
     @Transactional
     public RoomResponse create(RoomRequest request) {
         Room room = new Room();
-        applyRequest(room, request);
+        applyRequest(room, request, null);
         return toResponse(roomRepository.saveAndFlush(room));
     }
 
     @Transactional
-    public RoomResponse update(Long id, RoomRequest request) {
+    public RoomResponse update(UUID id, RoomRequest request) {
         Room room = findRoom(id);
-        applyRequest(room, request);
+        applyRequest(room, request, id);
         return toResponse(roomRepository.saveAndFlush(room));
     }
 
     @Transactional
-    public void delete(Long id) {
+    public void delete(UUID id) {
         Room room = findRoom(id);
         if (reservationRepository.existsByRoom_Id(id)) {
             throw new ConflictException("Cette salle est encore référencée par une réservation.");
@@ -62,21 +63,29 @@ public class RoomService {
         roomRepository.flush();
     }
 
-    private Room findRoom(Long id) {
+    private Room findRoom(UUID id) {
         return roomRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Salle introuvable : " + id));
     }
 
-    private void applyRequest(Room room, RoomRequest request) {
+    private void applyRequest(Room room, RoomRequest request, UUID currentId) {
+        String code = request.code().trim();
+        String building = request.building().trim();
+        boolean codeTaken = currentId == null
+                ? roomRepository.existsByBuildingAndCode(building, code)
+                : roomRepository.existsByBuildingAndCodeAndIdNot(building, code, currentId);
+        if (codeTaken) {
+            throw new ConflictException("Une salle utilise déjà ce code dans ce bâtiment.");
+        }
         Set<Equipment> equipment = new HashSet<>();
-        for (Long equipmentId : request.equipmentIds()) {
+        for (UUID equipmentId : request.equipmentIds()) {
             equipment.add(equipmentRepository.findById(equipmentId)
                     .orElseThrow(() -> new ResourceNotFoundException("Équipement introuvable : " + equipmentId)));
         }
+        room.setCode(code);
         room.setName(request.name().trim());
-        room.setBuilding(request.building().trim());
+        room.setBuilding(building);
         room.setCapacity(request.capacity());
-        room.setDescription(request.description());
         if (request.active() != null) {
             room.setActive(request.active());
         }
@@ -85,11 +94,11 @@ public class RoomService {
     }
 
     private RoomResponse toResponse(Room room) {
-        Set<Long> equipmentIds = new TreeSet<>();
+        Set<UUID> equipmentIds = new TreeSet<>();
         for (Equipment equipment : room.getEquipment()) {
             equipmentIds.add(equipment.getId());
         }
-        return new RoomResponse(room.getId(), room.getName(), room.getBuilding(), room.getCapacity(),
-                room.getDescription(), room.isActive(), equipmentIds);
+        return new RoomResponse(room.getId(), room.getCode(), room.getName(), room.getBuilding(),
+                room.getCapacity(), room.isActive(), equipmentIds);
     }
 }

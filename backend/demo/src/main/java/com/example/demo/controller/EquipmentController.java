@@ -6,6 +6,7 @@ import com.example.demo.service.EquipmentService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +32,7 @@ public class EquipmentController {
     }
 
     @GetMapping("/{id}")
-    public EquipmentResponse findById(@PathVariable Long id) {
+    public EquipmentResponse findById(@PathVariable UUID id) {
         return service.findById(id);
     }
 
@@ -42,12 +43,12 @@ public class EquipmentController {
     }
 
     @PutMapping("/{id}")
-    public EquipmentResponse update(@PathVariable Long id, @Valid @RequestBody EquipmentRequest request) {
+    public EquipmentResponse update(@PathVariable UUID id, @Valid @RequestBody EquipmentRequest request) {
         return service.update(id, request);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
