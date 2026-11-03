@@ -14,19 +14,26 @@ import java.util.Set;
 @Table(name = "equipment")
 public class Equipment {
 
+   
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id ;
 
+    
     @Column(nullable = false, unique = true)
     private String name;
-
+    
+    
     @ManyToMany(mappedBy = "equipment")
     private Set<Room> rooms = new HashSet<>();
 
     public Long getId() {
         return id;
     }
+
+    
+    
 
     public void setId(Long id) {
         this.id = id;

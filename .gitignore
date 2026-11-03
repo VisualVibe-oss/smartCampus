@@ -1,3 +1,8 @@
+./agent/*
+
+**/.agent/*
+
+
 # Fichiers IDE et configuration privee, dans tout le depot
 .idea/
 .vscode/
