@@ -28,6 +28,18 @@ public class GlobalExceptionHandler {
         return error(HttpStatus.CONFLICT, exception.getMessage(), request, Map.of());
     }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ApiError> unauthorized(UnauthorizedException exception,
+            HttpServletRequest request) {
+        return error(HttpStatus.UNAUTHORIZED, exception.getMessage(), request, Map.of());
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ApiError> forbidden(ForbiddenException exception,
+            HttpServletRequest request) {
+        return error(HttpStatus.FORBIDDEN, exception.getMessage(), request, Map.of());
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiError> integrityConflict(HttpServletRequest request) {
         return error(HttpStatus.CONFLICT,
