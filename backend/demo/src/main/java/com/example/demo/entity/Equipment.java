@@ -16,13 +16,9 @@ public class Equipment {
 
    
 
-<<<<<<< HEAD
-=======
-
->>>>>>> conflict/branch
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ref ;
+    private Long id ;
 
     
     @Column(nullable = false, unique = true)
