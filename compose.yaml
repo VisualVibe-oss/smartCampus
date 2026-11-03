@@ -9,6 +9,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./backend/demo/docs/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
@@ -21,7 +22,7 @@ services:
     image: smartcampus:1.0
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: backend/Dockerfile
     ports:
       - "${HOST_PORT:-8080}:8080"
     environment:
