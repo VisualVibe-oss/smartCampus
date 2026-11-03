@@ -101,7 +101,7 @@ Les collections retournent des tableaux JSON sans pagination.
 
 | Statut HTTP | Signification |
 | --- | --- |
-| `200` | Lecture ou modification réussie |
+| `200` | Lecture, connexion ou modification réussie |
 | `201` | Création réussie ; l'en-tête `Location` indique la ressource |
 | `204` | Suppression réussie, sans corps |
 | `400` | Entrée invalide, JSON illisible, début dans le passé ou salle/compte désactivé |

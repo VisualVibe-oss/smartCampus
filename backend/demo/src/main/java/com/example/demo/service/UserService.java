@@ -7,12 +7,13 @@ import com.example.demo.entity.User;
 import com.example.demo.exception.ConflictException;
 import com.example.demo.exception.InvalidRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.repository.AuthSessionRepository;
 import com.example.demo.repository.ReservationRepository;
 import com.example.demo.repository.UserRepository;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,11 +22,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
     private final ReservationRepository reservationRepository;
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final AuthSessionRepository sessionRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, ReservationRepository reservationRepository) {
+    public UserService(UserRepository userRepository, ReservationRepository reservationRepository,
+            AuthSessionRepository sessionRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.reservationRepository = reservationRepository;
+        this.sessionRepository = sessionRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<UserResponse> findAll() {
@@ -78,6 +83,7 @@ public class UserService {
         if (reservationRepository.existsByUser_Id(id)) {
             throw new ConflictException("Cet utilisateur est encore référencé par une réservation.");
         }
+        sessionRepository.deleteByUser_Id(id);
         userRepository.delete(user);
         userRepository.flush();
     }
