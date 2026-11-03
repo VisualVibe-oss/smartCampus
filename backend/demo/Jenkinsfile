@@ -1,0 +1,34 @@
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('backend/demo') {
+                    bat 'call mvnw.cmd -B clean package -DskipTests'
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                dir('backend/demo') {
+                    bat 'call mvnw.cmd -B test'
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            archiveArtifacts artifacts: 'backend/demo/target/*.jar', fingerprint: true
+        }
+    }
+}
